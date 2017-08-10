@@ -171,7 +171,7 @@ public class ManagePersonServlet extends HttpServlet {
         // Добавление записи.
         if (add_go != null) {
             // Создание записи на основе данных из формы.
-            Person new_person = new Person(request.getParameter("name"), request.getParameter("surname"), request.getParameter("middlename"));
+            Person new_person = new Person(request.getParameter("name"), request.getParameter("surname"), request.getParameter("middlename"), request.getParameter("numbers"));
 
             // Валидация ФИО.
             String error_message = this.validatePersonFMLName(new_person);
@@ -203,7 +203,6 @@ public class ManagePersonServlet extends HttpServlet {
                 jsp_parameters.put("next_action", "add_go");
                 jsp_parameters.put("next_action_label", "Добавить");
                 jsp_parameters.put("error_message", error_message);
-
                 // Установка параметров JSP.
                 request.setAttribute("person", new_person);
                 request.setAttribute("jsp_parameters", jsp_parameters);
@@ -220,6 +219,8 @@ public class ManagePersonServlet extends HttpServlet {
             updatable_person.setName(request.getParameter("name"));
             updatable_person.setSurname(request.getParameter("surname"));
             updatable_person.setMiddlename(request.getParameter("middlename"));
+            updatable_person.setPhones(new HashMap<>(Integer.parseInt(request.getParameter("owner")), Float.parseFloat(request.getParameter("phones"))));
+
 
             // Валидация ФИО.
             String error_message = this.validatePersonFMLName(updatable_person);

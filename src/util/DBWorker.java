@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBWorker {
-	
 	// Количество рядов таблицы, затронутых последним запросом.
 	private Integer affected_rows = 0;
 	

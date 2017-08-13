@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<%@ page import="app.Phonebook" %>
 <%@ page import="app.Person" %>
-<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.HashMap" %>
 <%@ page import="app.Phone" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -10,7 +8,7 @@
       xmlns:h="http://java.sun.com/jsf/html">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Список людей</title>
+    <title>Добавление телефона</title>
 </head>
 
 <style type="text/css">
@@ -22,20 +20,18 @@
         text-rendering: optimizeLegibility;
     }
 
-    .table-fill {
-        background: white;
-        border-radius: 3px;
+    .table-fill{
+        border-radius:3px;
         border-collapse: collapse;
         /*Побалуйся тут*/
-        height: 500px;
+        height: 400px;
         margin: auto;
         max-width: 900px;
-        padding: 5px;
         width: 100%;
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     }
 
-    th {
+    th{
         color: #D5DDE5;
         background: #1b1e24;
         border-bottom: 4px solid #9ea7af;
@@ -48,7 +44,7 @@
         vertical-align: middle;
     }
 
-    tr {
+    tr{
         border-top: 1px solid #C1C3D1;
         border-bottom: 1px solid #C1C3D1;
         color: #666B85;
@@ -57,27 +53,25 @@
     }
 
     tr:nth-child(odd) td {
-        background: #EBEBEB;
+        background:#EBEBEB;
     }
 
-    tr:hover td {
+    tr:hover td{
         background: #717491;
         color: #FFFFFF;
-        border-top: 1px solid #22262E;
-        border-bottom: 1px solid #22262E;
+        /*border-top: 1px solid #22262E;*/
+        /*border-bottom: 1px solid #22262E;*/
     }
 
     tr:nth-child(odd):hover td {
-        background: #4E5066;
+        background:#7E81A3;
     }
 
-    td {
-        height: 50px;
-        max-height: 50px;
+    td{
         background: #FFFFFF;
         padding: 10px;
         vertical-align: middle;
-        font-weight: 300;()
+        font-weight: 300;
         font-size: 16px;
     }
 
@@ -95,83 +89,88 @@
         text-decoration: underline;
         color: #FFFFFF;
     }
-
     a:active {
         text-decoration: underline;
+    }
+
+    /*Кнопки*/
+    input[type=text], select {
+        width: 100%;
+        height: 30px;
+        /*padding: 9px 0px;*/
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    input[type=submit] {
+        width: 100%;
+        height: 30px;
+        background-color: #4C75E9;
+        color: #000000;
+        padding: 6px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    input[type=submit]:hover {
+        background-color: #4380C4;
+        color: white;
+    }
+    .phones {
+        width: 100%;
     }
 </style>
 
 <body>
 
 <%
-    Phonebook phonebook = Phonebook.getInstance();
-    String user_message = "";
-    HashMap<String, String> jsp_parameters = new HashMap<String, String>();
-//	Phonebook phonebook = (Phonebook)request.getAttribute("phonebook");
+    HashMap<String, String> jsp_parameters = new HashMap<>();
+    Phone phone = new Phone();
+    String error_message = "";
 
     if (request.getAttribute("jsp_parameters") != null) {
         jsp_parameters = (HashMap<String, String>) request.getAttribute("jsp_parameters");
     }
 
-    user_message = jsp_parameters.get("current_action_result_label");
+    if (request.getAttribute("phone") != null) {
+        phone = (Phone) request.getAttribute("phone");
+    }
+
+    error_message = jsp_parameters.get("error_message");
 %>
 
-<table class="table-fill" align="center" border="1" width="90%">
-    <thread>
+<form action="<%=request.getContextPath()%>/" method="post">
+    <table class="table-fill" align="center" border="1" width="70%">
         <%
-            if ((user_message != null) && (!user_message.equals(""))) {
+        if ((error_message != null) && (!error_message.equals(""))) {
         %>
         <tr>
-            <td colspan="6" align="center"><%=user_message%>
-            </td>
+            <td colspan="2" align="center"><span style="color:red"><%=error_message%></span></td>
         </tr>
         <%
-            }
-        %>
-
-        <tr>
-            <td colspan="6" align="center"><a href="<%=request.getContextPath()%>/?action=add">Добавить запись</a></td>
-        </tr>
-        <tr>
-            <td align="center"><b>Фамилия</b></td>
-            <td align="center"><b>Имя</b></td>
-            <td align="center"><b>Отчество</b></td>
-            <td align="center"><b>Телефон(ы)</b></td>
-            <td align="center">&nbsp;</td>
-            <td align="center">&nbsp;</td>
-        </tr>
-    </thread>
-    <tbody>
-    <%
-        for (Person person : phonebook.getContents().values()) {
-
-    %>
-    <tr>
-        <td><%=person.getSurname()%>
-        </td>
-        <td><%=person.getName()%>
-        </td>
-        <td><%=person.getMiddlename()%>
-        </td>
-        <td>
-            <%
-                for (Phone phone : phonebook.getPhoneContents().values()) {
-                    if (phone.getOwner().equals(person.getId())) {
-            %>
-            <%=phone.getNumber()%><br/>
-            <%
-                    }
-                }
-            %>
-        </td>
-        <td><a href="<%=request.getContextPath()%>/?action=edit&id=<%=person.getId()%>">Редактировать</a></td>
-        <td><a href="<%=request.getContextPath()%>/?action=delete&id=<%=person.getId()%>">Удалить</a></td>
-    </tr>
-    <%
         }
-    %>
-    </tbody>
-</table>
-
+        %>
+        <tr>
+            <td><input type="text" name="number" value="<%=phone.getNumber()%>"/></td>
+        </tr>
+        <tr>
+        <td colspan="2" align="center">
+        <input type="submit" name="<%=jsp_parameters.get("next_action")%>"
+        value="<%=jsp_parameters.get("next_action_label")%>"/><br>
+        <a href="../">Вернуться к списку</a>
+        </td>
+        </tr>
+    </table>
+    <tr>
+            <input type="hidden" name="idPhone" value="<%=phone.getId()%>"/>
+        </tr>
+    <tr>
+            <input type="hidden" name="owner" value="<%=phone.getOwner()%>"/>
+        </tr>
+</form>
 </body>
 </html>
